@@ -1,14 +1,14 @@
 <template>
     <div id='home'>
         <nav-bar  class='home-nav'><div slot='center'>购物街</div></nav-bar>
-        <Scroll class='content' ref='scroll'>
+        <Scroll class='content' ref='scroll' :probe-type='3' @scrollPosition="scrollPosition">
             <home-swiper :banner='banner'></home-swiper>
             <recommendView :recommend='recommend'></recommendView>
             <feature-view></feature-view>
             <home-tab-control class='home-tab-control' :title="['流行','新款','精选']" @tabControl="tabControl"></home-tab-control>
             <goods-list :goods="Goods[currentTab].list"></goods-list>
         </Scroll>
-        <back-top @click.native="backTopClick"></back-top>
+        <back-top @click.native="backTopClick" v-show="isShowBackTop"></back-top>
     </div>
 </template>
 
@@ -34,7 +34,8 @@ export default {
                 'new': {page: 0, list: []},
                 'sell': {page: 0, list: []}
             },
-            currentTab: 'pop'
+            currentTab: 'pop',
+            isShowBackTop: false
         }
     },
     components:{
@@ -73,6 +74,10 @@ export default {
         },
         backTopClick(){
             this.$refs.scroll.bsscroll.scrollTo(0,0)
+        },
+        scrollPosition(position){
+            //console.log(position);
+            this.isShowBackTop = (-position.y) > 1500
         },
         /**
          * 跟网络请求相关的方法

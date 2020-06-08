@@ -12,15 +12,28 @@ import bsScroll from 'better-scroll'
 export default {
     data() {
         return {
-            bsscroll: null 
+            bsscroll: null,
         }
+    },
+    props:{
+        probeType: {
+                type: Number,
+                default: 0
+            }
     },
     components:{
         bsScroll
     },
     mounted() {
         this.bsscroll = new bsScroll(this.$refs.wrapper,{
-
+            click: true,
+            probeType: this.probeType
+            
+        })
+        //console.log(this.probeType);
+        
+        this.bsscroll.on('scroll', (position) => {
+            this.$emit('scrollPosition',position)
         })
     },
     methods: {
