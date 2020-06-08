@@ -1,11 +1,18 @@
 <template>
     <div id='home'>
         <nav-bar  class='home-nav'><div slot='center'>购物街</div></nav-bar>
-        <Scroll class='content' ref='scroll' :probe-type='3' @scrollPosition="scrollPosition">
+        <Scroll class='content' ref='scroll' 
+            :probe-type='3'
+            @scrollPosition="scrollPosition"
+            :pull-up-load="true"
+            @pullingUp="loadMore">
             <home-swiper :banner='banner'></home-swiper>
             <recommendView :recommend='recommend'></recommendView>
             <feature-view></feature-view>
-            <home-tab-control class='home-tab-control' :title="['流行','新款','精选']" @tabControl="tabControl"></home-tab-control>
+            <home-tab-control class='home-tab-control' 
+                :title="['流行','新款','精选']" 
+                @tabControl="tabControl">
+            </home-tab-control>
             <goods-list :goods="Goods[currentTab].list"></goods-list>
         </Scroll>
         <back-top @click.native="backTopClick" v-show="isShowBackTop"></back-top>
@@ -78,6 +85,12 @@ export default {
         scrollPosition(position){
             //console.log(position);
             this.isShowBackTop = (-position.y) > 1500
+        },
+        loadMore(){
+            //console.log('------');
+            
+            this.getGoodsData(this.currentTab)
+            this.$refs.scroll.finishPullUp()
         },
         /**
          * 跟网络请求相关的方法

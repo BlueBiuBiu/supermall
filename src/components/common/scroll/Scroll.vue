@@ -19,7 +19,11 @@ export default {
         probeType: {
                 type: Number,
                 default: 0
-            }
+            },
+        pullUpLoad: {
+            type: Boolean,
+            default: false
+        }
     },
     components:{
         bsScroll
@@ -27,18 +31,26 @@ export default {
     mounted() {
         this.bsscroll = new bsScroll(this.$refs.wrapper,{
             click: true,
-            probeType: this.probeType
+            probeType: this.probeType,
+            pullUpLoad: this.pullUpLoad
             
         })
         //console.log(this.probeType);
+        console.log(this.pullUpLoad);
         
         this.bsscroll.on('scroll', (position) => {
             this.$emit('scrollPosition',position)
+        })
+        this.bsscroll.on('pullingUp',() => {
+            this.$emit('pullingUp')
         })
     },
     methods: {
        scrollTo(x, y, time=300){
             this.bsscroll.scrollTo(x, y, time)
+        },
+        finishPullUp(){
+            this.bsscroll.finishPullUp()
         }
     },
 }
