@@ -36,7 +36,7 @@ export default {
             
         })
         //console.log(this.probeType);
-        console.log(this.pullUpLoad);
+        //console.log(this.pullUpLoad);
         
         this.bsscroll.on('scroll', (position) => {
             this.$emit('scrollPosition',position)
@@ -51,7 +51,12 @@ export default {
         },
         finishPullUp(){
             this.bsscroll.finishPullUp()
+        },
+        refresh(){
+            //console.log('------')
+            this.bsscroll.refresh()
         }
+        
     },
 }
 </script>

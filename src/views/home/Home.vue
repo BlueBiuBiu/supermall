@@ -1,15 +1,18 @@
 <template>
     <div id='home'>
         <nav-bar  class='home-nav'><div slot='center'>购物街</div></nav-bar>
+        <home-tab-control ref='homeTabControl1'
+                :title="['流行','新款','精选']" 
+                @tabControl="tabControl" :class="{isShow: tabShow}"/>
         <Scroll class='content' ref='scroll' 
             :probe-type='3'
             @scrollPosition="scrollPosition"
             :pull-up-load="true"
             @pullingUp="loadMore">
-            <home-swiper :banner='banner'></home-swiper>
+            <home-swiper :banner='banner' @swiperImageLoad='swiperImageLoad'></home-swiper>
             <recommendView :recommend='recommend'></recommendView>
             <feature-view></feature-view>
-            <home-tab-control class='home-tab-control' 
+            <home-tab-control ref='homeTabControl2'
                 :title="['流行','新款','精选']" 
                 @tabControl="tabControl">
             </home-tab-control>
@@ -42,7 +45,9 @@ export default {
                 'sell': {page: 0, list: []}
             },
             currentTab: 'pop',
-            isShowBackTop: false
+            isShowBackTop: false,
+            tabOffsetTop: 0,
+            tabShow: false
         }
     },
     components:{
@@ -61,10 +66,34 @@ export default {
         this.getGoodsData('new'),
         this.getGoodsData('sell')
     },
+    mounted() {
+        const refresh = this.debounce(this.$refs.scroll.refresh,100)
+        this.$bus.$on('imageLoad',() => {
+            refresh()
+            //return this.debounce(this.$refs.scroll.refresh,100)
+        })
+    },
     methods: {
         /**
          * 跟事件监听相关的方法
          */
+        swiperImageLoad(){
+            console.log('-----');
+            //console.log(this.$refs.homeTabControl.$el.offsetTop);
+            //$el可以取到组件里面的所有元素
+            this.tabOffsetTop = this.$refs.homeTabControl2.$el.offsetTop
+            
+        },
+        debounce(func,delay){
+            let timer = null
+            return function(...args)
+            {
+                if(timer) clearTimeout(timer)
+                timer = setTimeout(() => {
+                    func.apply(this,args)
+                },delay)
+            }
+        },
         tabControl(index){
             switch(index){
                 case 0:
@@ -76,15 +105,17 @@ export default {
                 case 2:
                     this.currentTab = 'sell'
                     break
-
             }
+            this.$refs.homeTabControl1.currentIndex = index
+            this.$refs.homeTabControl2.currentIndex = index
         },
         backTopClick(){
-            this.$refs.scroll.bsscroll.scrollTo(0,0)
+            this.$refs.scroll.scrollTo(0,0)
         },
         scrollPosition(position){
             //console.log(position);
             this.isShowBackTop = (-position.y) > 1500
+            this.tabShow = (-position.y) > this.tabOffsetTop
         },
         loadMore(){
             //console.log('------');
@@ -127,16 +158,20 @@ export default {
         right: 0;
         z-index: 9;
     }
-    .home-tab-control {
+    /* .home-tab-control {
         position: sticky;
         top: 44px;
         z-index: 9;
-    }
+    } */
     .content {
         position: absolute;
         left: 0;
         right: 0;
         top: 44px;
         bottom: 49px;
+    }
+    .isShow {
+        position: relative;
+        z-index: 9;
     }
 </style>
