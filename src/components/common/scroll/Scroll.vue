@@ -55,6 +55,9 @@ export default {
         refresh(){
             //console.log('------')
             this.bsscroll.refresh()
+        },
+        getScrollY(){
+            return this.bsscroll.y
         }
         
     },

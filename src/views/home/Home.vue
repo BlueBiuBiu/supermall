@@ -47,7 +47,8 @@ export default {
             currentTab: 'pop',
             isShowBackTop: false,
             tabOffsetTop: 0,
-            tabShow: false
+            tabShow: false,
+            saveY: 0
         }
     },
     components:{
@@ -66,6 +67,15 @@ export default {
         this.getGoodsData('new'),
         this.getGoodsData('sell')
     },
+    activated() {
+        this.$refs.scroll.scrollTo(0,this.saveY,0)
+        
+    },
+    deactivated() {
+        //console.log(this.$refs.scroll.bsscroll.y);
+        
+        this.saveY = this.$refs.scroll.getScrollY()
+    },
     mounted() {
         const refresh = this.debounce(this.$refs.scroll.refresh,100)
         this.$bus.$on('imageLoad',() => {
@@ -78,7 +88,7 @@ export default {
          * 跟事件监听相关的方法
          */
         swiperImageLoad(){
-            console.log('-----');
+            //console.log('-----');
             //console.log(this.$refs.homeTabControl.$el.offsetTop);
             //$el可以取到组件里面的所有元素
             this.tabOffsetTop = this.$refs.homeTabControl2.$el.offsetTop
