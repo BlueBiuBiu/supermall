@@ -34,6 +34,8 @@ import Scroll from 'components/common/scroll/Scroll'
 import BackTop from 'components/content/backTop/BackTop'
 
 import {getHomeMultidata, getGoodsData} from 'network/home'
+
+import {debounce} from 'common/utils'
 export default {
     data() {
         return {
@@ -77,7 +79,7 @@ export default {
         this.saveY = this.$refs.scroll.getScrollY()
     },
     mounted() {
-        const refresh = this.debounce(this.$refs.scroll.refresh,100)
+        const refresh = debounce(this.$refs.scroll.refresh,100)
         this.$bus.$on('imageLoad',() => {
             refresh()
             //return this.debounce(this.$refs.scroll.refresh,100)
@@ -93,16 +95,6 @@ export default {
             //$el可以取到组件里面的所有元素
             this.tabOffsetTop = this.$refs.homeTabControl2.$el.offsetTop
             
-        },
-        debounce(func,delay){
-            let timer = null
-            return function(...args)
-            {
-                if(timer) clearTimeout(timer)
-                timer = setTimeout(() => {
-                    func.apply(this,args)
-                },delay)
-            }
         },
         tabControl(index){
             switch(index){

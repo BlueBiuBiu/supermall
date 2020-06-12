@@ -7,6 +7,7 @@
             <detail-shop-info :shop='shop'></detail-shop-info>
             <detail-goods-info :goods-info="goodsInfo" @goodsLoad='goodsLoad'></detail-goods-info>
             <detail-goods-params :goods-params='goodsParams'></detail-goods-params>
+            <detail-comment-info :comment-info='commentInfo'></detail-comment-info>
         </scroll>
     </div>
 </template>
@@ -15,9 +16,10 @@
 import DetailNavBar from 'views/detail/ChildComs/DetailNavBar'
 import DetailSwiper from './ChildComs/DetailSwiper'
 import DetailBaseInfo from './ChildComs/DetailBaseInfo'
-import DetailShopInfo from './ChildComs/DetaShopInfo'
+import DetailShopInfo from './ChildComs/DetailShopInfo'
 import DetailGoodsInfo from './ChildComs/DetailGoodsInfo'
 import DetailGoodsParams from './ChildComs/DetailGoodsParams'
+import DetailCommentInfo from './ChildComs/DetailCommentInfo'
 
 import Scroll from 'components/common/scroll/Scroll'
 
@@ -31,7 +33,8 @@ export default {
             goods: {},
             shop: {},
             goodsInfo: {},
-            goodsParams: {}
+            goodsParams: {},
+            commentInfo: {}
         }
     },
     created() {
@@ -47,7 +50,9 @@ export default {
              //console.log(this.shop);
              this.goodsInfo = new GoodsInfo(data.detailInfo)
              this.goodsParams = new GoodsParams(data.itemParams.info, data.itemParams.rule)
-             
+             if(data.rate.cRate !==0){
+                 this.commentInfo = data.rate.list[0]
+             }
          })
         
     },
@@ -59,12 +64,12 @@ export default {
         Scroll,
         GoodsInfo,
         DetailGoodsInfo,
-        DetailGoodsParams
+        DetailGoodsParams,
+        DetailCommentInfo
     },
     methods: {
         goodsLoad(){
-            console.log('--------');
-            
+            //console.log('--------');          
             this.$refs.scroll.refresh()
         }
     },
