@@ -1,10 +1,10 @@
 <template>
   <div class="list-item">
       <div class="item-selector">
-          <check-button></check-button>
+          <check-button :is-check='goods.checked' @click.native="checkClick"></check-button>
       </div>
     <div class="item-img">
-      <img :src="goods.image" alt="商品图片">
+      <img :src="goods.image" alt="">
     </div>
     <div class="item-info">
       <div class="item-title">{{goods.title}}</div>
@@ -31,7 +31,12 @@ export default {
     },
     components: {
         CheckButton
-    }
+    },
+    methods: {
+        checkClick(){
+            this.goods.checked = !this.goods.checked
+        }
+    },
 }
 </script>
 

@@ -7,6 +7,7 @@ export default {
         payLoad.count += 1
     },
     [ADD_GOODS](state,payLoad){
+        payLoad.checked = true
         state.cartList.push(payLoad)
     }
 }
