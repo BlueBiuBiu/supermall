@@ -3,7 +3,7 @@
         <nav-bar  class='home-nav'><div slot='center'>购物街</div></nav-bar>
         <home-tab-control ref='homeTabControl1'
                 :title="['流行','新款','精选']" 
-                @tabControl="tabControl" :class="{isShow: tabShow}"/>
+                @tabControl="tabControl" :class="{isShow: tabShow}" v-show="tabShow"/>
         <Scroll class='content' ref='scroll' 
             :probe-type='3'
             @scrollPosition="scrollPosition"
@@ -14,7 +14,7 @@
             <feature-view></feature-view>
             <home-tab-control ref='homeTabControl2'
                 :title="['流行','新款','精选']" 
-                @tabControl="tabControl">
+                @tabControl="tabControl"> 
             </home-tab-control>
             <goods-list :goods="Goods[currentTab].list"></goods-list>
         </Scroll>
@@ -31,9 +31,11 @@ import HomeSwiper from './ChildComps/HomeSwiper'
 import HomeTabControl from 'components/content/homeTabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
-import BackTop from 'components/content/backTop/BackTop'
+//import BackTop from 'components/content/backTop/BackTop'
 
 import {getHomeMultidata, getGoodsData} from 'network/home'
+
+import {itemImgListenerMixin,backTopMixin} from 'common/mixin'
 
 import {debounce} from 'common/utils'
 export default {
@@ -47,12 +49,13 @@ export default {
                 'sell': {page: 0, list: []}
             },
             currentTab: 'pop',
-            isShowBackTop: false,
+            //isShowBackTop: false,
             tabOffsetTop: 0,
             tabShow: false,
             saveY: 0
         }
     },
+    mixins: [itemImgListenerMixin,backTopMixin],
     components:{
         NavBar,
         RecommendView,
@@ -61,7 +64,7 @@ export default {
         HomeTabControl,
         GoodsList,
         Scroll,
-        BackTop
+        //BackTop
     },
     created() {
         this.getHomeMultidata(),
@@ -74,16 +77,12 @@ export default {
         
     },
     deactivated() {
+        const refresh = debounce(this.$refs.scroll.refresh, 100)
+        this.$bus.$off('imageLoad', this.itemImgListener)
         //console.log(this.$refs.scroll.bsscroll.y);
-        
         this.saveY = this.$refs.scroll.getScrollY()
     },
     mounted() {
-        const refresh = debounce(this.$refs.scroll.refresh,100)
-        this.$bus.$on('imageLoad',() => {
-            refresh()
-            //return this.debounce(this.$refs.scroll.refresh,100)
-        })
     },
     methods: {
         /**
@@ -111,9 +110,9 @@ export default {
             this.$refs.homeTabControl1.currentIndex = index
             this.$refs.homeTabControl2.currentIndex = index
         },
-        backTopClick(){
-            this.$refs.scroll.scrollTo(0,0)
-        },
+        // backTopClick(){
+        //     this.$refs.scroll.scrollTo(0,0)
+        // },
         scrollPosition(position){
             //console.log(position);
             this.isShowBackTop = (-position.y) > 1500
@@ -171,6 +170,7 @@ export default {
         right: 0;
         top: 44px;
         bottom: 49px;
+        overflow: hidden;
     }
     .isShow {
         position: relative;

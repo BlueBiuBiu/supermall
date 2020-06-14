@@ -3,7 +3,7 @@
         <swiper class="detail-swiper">
             <swiper-item v-for="(item,index) in topImages" :key='index'>
                 <!-- {{item}} -->
-                <img :src="item" alt="">
+                <img :src="item" alt="" @load='imgLoad'>
             </swiper-item>
         </swiper>
         <!-- <div v-for="item in topImages">{{item}}</div> -->
@@ -16,7 +16,7 @@ import swiperItem from 'components/common/swiper/SwiperItem'
 export default {
     data() {
         return {
-            
+            counter: 0
         }
     },
     props:{
@@ -31,7 +31,17 @@ export default {
     components:{
         swiper,
         swiperItem
-    }
+    },
+    methods: {
+        imgLoad(){
+            this.counter += 1
+            if(this.counter === this.topImages.length){
+                this.$emit('imgLoad')
+                //console.log(this.topImages.length);
+                
+            }
+        }
+    },
 }
 </script>
 

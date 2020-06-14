@@ -9,6 +9,15 @@ export function getDetailData(iid){
     })
 }
 
+export function getRecommendData(iid){
+  return request2({
+      url: '/api/n3/recommend',
+      params: {
+          iid
+      }
+  })
+}
+
 export class Goods {
     constructor(itemInfo, columns, services) {
       this.title = itemInfo.title;
@@ -20,7 +29,6 @@ export class Goods {
       this.discountBgColor = itemInfo.discountBgColor;
       this.columns = columns;
       this.services = services;
-      this.nowPrice = itemInfo.highNowPrice;
     }
   }
 

@@ -1,15 +1,53 @@
 <template>
-    <div>
-        <h2>购物车</h2>
+    <div class="cart">
+        <nav-bar class="cart-nav">
+            <div slot="center">购物车({{length}})</div>
+        </nav-bar>
+        <scroll class="content" ref="scroll">
+            <cart-list></cart-list>
+        </scroll>    
     </div>
 </template>
 
 <script>
+import NavBar from 'components/common/navbar/NavBar'
+import CartList from './ChildComs/CartList'
+
+import Scroll from 'components/common/scroll/Scroll'
+
+import {mapGetters} from 'vuex'
 export default {
-    
+    components:{
+        NavBar,
+        CartList,
+        Scroll
+    },
+    computed: {
+        //可以将store里面的getters方法映射到局部计算属性
+        //第一种用法
+        //...mapGetters(['cartListLength'])
+        //第二种用法
+        ...mapGetters({
+            length: 'cartListLength'
+        })
+    },
+    activated() {
+        //console.log('Cart-----');
+        this.$refs.scroll.refresh()
+    },
 }
 </script>
 
-<style>
-    
+<style scoped>
+    .cart {
+        height: 100vh;
+    }
+    .cart-nav {
+        background-color: var(--color-tint);
+        color: white;
+    }
+    .content {
+        height: calc(100% - 44px - 49px);
+        overflow: hidden;
+    }
 </style>
