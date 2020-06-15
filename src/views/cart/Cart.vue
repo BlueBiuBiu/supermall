@@ -6,12 +6,14 @@
         <scroll class="content" ref="scroll">
             <cart-list></cart-list>
         </scroll>    
+        <cart-bottom-bar></cart-bottom-bar>
     </div>
 </template>
 
 <script>
 import NavBar from 'components/common/navbar/NavBar'
 import CartList from './ChildComs/CartList'
+import CartBottomBar from './ChildComs/CartBottomBar'
 
 import Scroll from 'components/common/scroll/Scroll'
 
@@ -20,7 +22,8 @@ export default {
     components:{
         NavBar,
         CartList,
-        Scroll
+        Scroll,
+        CartBottomBar
     },
     computed: {
         //可以将store里面的getters方法映射到局部计算属性

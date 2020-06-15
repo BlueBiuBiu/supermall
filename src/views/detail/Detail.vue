@@ -12,6 +12,7 @@
         </scroll>
         <back-top @click.native="backTopClick" v-show="isShowBackTop"></back-top>
         <detail-bottom-nav @addCart='addToCart'></detail-bottom-nav>
+        <!-- <toast :message='message' :is-show='isShow'></toast> -->
     </div>
 </template>
 
@@ -24,6 +25,7 @@ import DetailGoodsInfo from './ChildComs/DetailGoodsInfo'
 import DetailGoodsParams from './ChildComs/DetailGoodsParams'
 import DetailCommentInfo from './ChildComs/DetailCommentInfo'
 import DetailBottomNav from './ChildComs/DetailBottomNav'
+// import Toast from 'components/common/toast/Toast'
 
 import Scroll from 'components/common/scroll/Scroll'
 import GoodsList from 'components/content/goods/GoodsList'
@@ -45,7 +47,9 @@ export default {
             recommendImg: [],
             titlePosition: [],
             getTitlePosition: null,
-            currentIndex: 0
+            currentIndex: 0,
+            // message: '',
+            // isShow: null
         }
     },
     mixins: [itemImgListenerMixin,backTopMixin],
@@ -103,7 +107,8 @@ export default {
         DetailGoodsParams,
         DetailCommentInfo,
         GoodsList,
-        DetailBottomNav
+        DetailBottomNav,
+        // Toast
     },
     methods: {
         addToCart(){
@@ -117,7 +122,13 @@ export default {
             goodsList.count = 0
 
             //this.$store.commit('addToCart',goodsList)
-            this.$store.dispatch('addToCart', goodsList)
+            this.$store.dispatch('addToCart', goodsList).then(res => {
+                console.log('加入购物车时res',res);
+                
+                this.$toast.show(res)
+            })
+
+            
         },
         imgLoad(){
             //console.log('----------');
