@@ -44,6 +44,7 @@ export default {
         this.bsscroll.on('pullingUp',() => {
             this.$emit('pullingUp')
         })
+        //console.log(this.bsscroll); 
     },
     methods: {
        scrollTo(x, y, time=300){

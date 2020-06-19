@@ -10,24 +10,25 @@
 </template>
 
 <script>
-import {getCategoryData} from 'network/category'
 export default {
     name: '',
     data() {
         return {
-            tabTitle: [],
-            currentIndex: 0
+            currentIndex: 0,
+        }
+    },  
+    props: {
+        tabTitle: {
+            type: Array,
+            default(){
+                return []
+            }
         }
     },
-    activated() {
-        getCategoryData().then(res => {
-            console.log(res.data.category.list);
-            this.tabTitle = res.data.category.list
-        })
-    },   
     methods: {
         categoryClick(index){
             this.currentIndex = index
+            this.$emit('categoryClick',index)
         }
     }, 
 }
