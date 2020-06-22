@@ -1,14 +1,16 @@
 <template>
     <div id="category">
         <nav-bar><div slot="center" class="category-nav-bar">商品分类</div></nav-bar>
-        <scroll class="content" ref='scroll'>
-            <category-tab-control @categoryClick="categoryClick" 
+        <category-tab-control @categoryClick="categoryClick" 
             :tab-title='tabTitle'>
-            </category-tab-control>        
-            <div class="tab">
-                <tab-control :title="['流行','新款','精选']" @tabControl='tabControl'></tab-control>
-                <category-info :category-info="categoryList"></category-info>
-            </div>
+        </category-tab-control>  
+        <tab-control :title="['流行','新款','精选']" 
+        @tabControl='tabControl' class="tabHidden" v-show='tabShow'>
+        </tab-control>
+        <scroll class="content" ref='scroll' :probe-type='3' @scrollPosition="scrollPosition">
+            <category-top-info :category-info="topCategoryList"></category-top-info>
+            <tab-control :title="['流行','新款','精选']" @tabControl='tabControl' class="tab"></tab-control>
+            <category-info :category-info="categoryList"></category-info>
         </scroll>
     </div>
 </template>
@@ -16,6 +18,7 @@
 <script>
 import CategoryTabControl from './ChildComs/CategoryTabControl'
 import CategoryInfo from './ChildComs/categoryInfo'
+import CategoryTopInfo from './ChildComs/CategoryTopInfo'
 
 import TabControl from 'components/content/homeTabControl/TabControl'
 
@@ -24,15 +27,21 @@ import Scroll from 'components/common/scroll/Scroll'
 
 import {getSubCategoryData, getSubCategoryDetailData, getCategoryData} from 'network/category'
 
+import {debounce} from 'common/utils'
+
 export default {
     name: 'Category',
     data() {
         return {
             categoryList: [],
+            topCategoryList: [],
             miniWallkey: [],
             currentTab: 'pop',
             currentIndex: 1,
-            tabTitle: []
+            counter: 0,
+            tabTitle: [],
+            tabOffSet: 0,
+            tabShow: false
         }
     },
     components: {
@@ -40,7 +49,8 @@ export default {
         CategoryTabControl,
         Scroll,
         TabControl,
-        CategoryInfo
+        CategoryInfo,
+        CategoryTopInfo
     },
     created(){ 
         getCategoryData().then(res => {
@@ -51,17 +61,27 @@ export default {
         })
     },
     mounted(){
+        this.$bus.$on('categoryTopImageLoad', () =>{
+            this.$refs.scroll.refresh()
+            this.counter +=1
+            debounce(this.tabOffSet = (this.counter/3)*80,100)
+            
+        })  
         this.$bus.$on('categoryImageLoad', () =>{
             this.$refs.scroll.refresh()
-        })  
+            
+        }) 
     },
     methods: {
+        scrollPosition(position){
+            this.tabShow = (-position.y) > this.tabOffSet
+        },
         categoryClick(index){
             this.currentIndex = index
             const maitKey = this.tabTitle[index].maitKey
             getSubCategoryData(maitKey).then(res => {
                 //console.log(res);
-                // this.categoryList = res.data.list 
+                this.topCategoryList = res.data.list 
             })
             this.getSubCategoryDetailData(index)
         },
@@ -69,8 +89,7 @@ export default {
             const miniWallkey = this.tabTitle[index].miniWallkey
             getSubCategoryDetailData(miniWallkey,this.currentTab).then(res => {
                 this.categoryList = res
-                console.log(res);
-                
+                //console.log(res);
             })
         },
         tabControl(index){
@@ -85,7 +104,7 @@ export default {
                     this.currentTab = 'sell'
                     break
             }
-            this.categoryClick(this.currentIndex)
+            this.getSubCategoryDetailData(this.currentIndex)
         }
 
     }
@@ -107,16 +126,23 @@ export default {
     }
     .content {
         position: absolute;
-        left: 0;
-        right: 0;
         top: 44px;
-        bottom: 49px;
-        overflow: hidden; 
-    }
-    .tab {
-        position: absolute;
-        top: 0;
         right: 0;
         left: 25%;
+        bottom: 49px;
+        overflow: hidden;
+    }
+    .tab {
+        background-color: white;
+    }
+    .tabHidden {
+        position: absolute;
+        top: 44px;
+        right: 0;
+        left: 25%;
+        bottom: 49px;
+        z-index: 9;
+        overflow: hidden;
+        background-color: white;
     }
 </style>
