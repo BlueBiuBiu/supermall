@@ -38,9 +38,7 @@ export default {
             miniWallkey: [],
             currentTab: 'pop',
             currentIndex: 1,
-            counter: 0,
             tabTitle: [],
-            tabOffSet: 0,
             tabShow: false
         }
     },
@@ -59,22 +57,24 @@ export default {
             this.categoryClick(0)
             this.getSubCategoryDetailData(0)
         })
+        console.log('created');
+        
     },
-    mounted(){
-        this.$bus.$on('categoryTopImageLoad', () =>{
-            this.$refs.scroll.refresh()
-            this.counter +=1
-            debounce(this.tabOffSet = (this.counter/3)*80,100)
-            
-        })  
-        this.$bus.$on('categoryImageLoad', () =>{
-            this.$refs.scroll.refresh()
-            
-        }) 
+    mounted() {
+            this.$bus.$on('categoryImageLoad', () =>{
+            debounce(this.$refs.scroll.refresh(),500)
+            console.log(this.$refs.scroll.refresh)
+        })
+    },
+    destroyed() {
+        this.$bus.$off('imageLoad', 'categoryImageLoad', () => {
+            debounce(this.$refs.scroll.refresh(),500)
+            console.log(this.$refs.scroll.refresh)
+        })
     },
     methods: {
         scrollPosition(position){
-            this.tabShow = (-position.y) > this.tabOffSet
+            this.tabShow = (-position.y) > 960
         },
         categoryClick(index){
             this.currentIndex = index

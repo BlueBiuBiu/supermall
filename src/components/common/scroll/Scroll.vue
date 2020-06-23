@@ -48,14 +48,14 @@ export default {
     },
     methods: {
        scrollTo(x, y, time=300){
-            this.bsscroll.scrollTo(x, y, time)
+            this.bsscroll && this.bsscroll.scrollTo(x, y, time)
         },
         finishPullUp(){
-            this.bsscroll.finishPullUp()
+            this.bsscroll && this.bsscroll.finishPullUp()
         },
         refresh(){
             //console.log('------')
-            this.bsscroll.refresh()
+            this.bsscroll && this.bsscroll.refresh()
         },
         getScrollY(){
             return this.bsscroll.y

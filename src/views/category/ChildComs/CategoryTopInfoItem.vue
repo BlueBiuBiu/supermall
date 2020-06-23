@@ -1,9 +1,11 @@
 <template>
     <div class="goods-item">
-        <img v-lazy="showImg" alt="" @load="TopimageLoad">
-        <div class='goods-info'>
-            <p>{{goodsItem.title}}</p>
-        </div>
+        <a href="goodsItem.link">
+          <img v-lazy="showImg" alt="">
+          <div class='goods-info'>
+              <p>{{goodsItem.title}}</p>
+          </div>
+        </a>
     </div>
 </template>
 
@@ -18,9 +20,9 @@ export default {
         }
     },
     methods: {
-      TopimageLoad() {
-        this.$bus.$emit('categoryTopImageLoad')
-      },
+      // TopImageLoad() {
+      //   this.$bus.$emit('categoryTopImageLoad')
+      // },
     },
     computed: {
       showImg(){

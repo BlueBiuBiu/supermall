@@ -57,7 +57,7 @@ export default {
         this.iid = this.$route.params.iid
         //console.log(this.iid);
          getDetailData(this.iid).then(res => {
-             console.log(res);
+             //console.log(res);
              const data = res.result
              this.topImages = data.itemInfo.topImages
              //console.log(data.shopInfo);
