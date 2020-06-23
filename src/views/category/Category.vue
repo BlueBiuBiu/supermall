@@ -39,7 +39,8 @@ export default {
             currentTab: 'pop',
             currentIndex: 1,
             tabTitle: [],
-            tabShow: false
+            tabShow: false,
+            saveY: 0
         }
     },
     components: {
@@ -66,11 +67,17 @@ export default {
             console.log(this.$refs.scroll.refresh)
         })
     },
-    destroyed() {
+    activated() {
+        this.$refs.scroll.scrollTo(0,this.saveY,0)
+    },
+    deactivated() {
+        console.log('deactivated')
+        this.saveY = this.$refs.scroll.getScrollY()
+        console.log(this.$refs.scroll.getScrollY);
         this.$bus.$off('imageLoad', 'categoryImageLoad', () => {
             debounce(this.$refs.scroll.refresh(),500)
             console.log(this.$refs.scroll.refresh)
-        })
+        })  
     },
     methods: {
         scrollPosition(position){
